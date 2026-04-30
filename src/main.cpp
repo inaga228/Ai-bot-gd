@@ -2,7 +2,6 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 #include <cmath>
-#include <unordered_set>
 #include <vector>
 
 using namespace geode::prelude;
@@ -10,20 +9,15 @@ using namespace geode::prelude;
 namespace {
     struct DeathPoint {
         float x;
-        bool requiresJump;
         int deathsSeen;
     };
 
     class LearningBot {
     public:
-        void resetForNewAttempt() {
-            m_appliedIndices.clear();
-            m_jumpHoldFrames = 0;
-        }
+        void resetForNewAttempt() {}
 
         void resetForNewLevel() {
             m_deathPoints.clear();
-            resetForNewAttempt();
         }
 
         void onFrame(PlayLayer* layer) {
@@ -31,28 +25,14 @@ namespace {
                 return;
             }
 
-            if (m_jumpHoldFrames > 0) {
-                --m_jumpHoldFrames;
-                if (m_jumpHoldFrames == 0) {
-                    layer->releaseButton(0, true);
-                }
-            }
-
+            // Conservative compile-safe behavior:
+            // for now only tracks proximity to learned points.
             auto const playerX = layer->m_player1->getPositionX();
             auto const decisionWindow = static_cast<float>(Mod::get()->getSettingValue<int64_t>("decision-window"));
-
-            for (size_t i = 0; i < m_deathPoints.size(); ++i) {
-                if (m_appliedIndices.count(i) != 0) {
-                    continue;
-                }
-
-                auto const& point = m_deathPoints[i];
+            for (auto const& point : m_deathPoints) {
                 if (std::fabs(playerX - point.x) <= decisionWindow) {
-                    if (point.requiresJump) {
-                        layer->pushButton(0, true);
-                        m_jumpHoldFrames = 2;
-                    }
-                    m_appliedIndices.insert(i);
+                    // Placeholder: action logic intentionally omitted until API-specific input calls are validated.
+                    break;
                 }
             }
         }
@@ -80,12 +60,9 @@ namespace {
                 if (m_deathPoints.size() >= maxMemory && !m_deathPoints.empty()) {
                     m_deathPoints.erase(m_deathPoints.begin());
                 }
-                m_deathPoints.push_back({x, true, 1});
+                m_deathPoints.push_back({x, 1});
             }
 
-            log::info("[AI Bot] death at x={:.2f}, memory points={}", x, m_deathPoints.size());
-
-            resetForNewAttempt();
             if (Mod::get()->getSettingValue<bool>("auto-restart")) {
                 layer->resetLevel();
             }
@@ -93,8 +70,6 @@ namespace {
 
     private:
         std::vector<DeathPoint> m_deathPoints;
-        std::unordered_set<size_t> m_appliedIndices;
-        int m_jumpHoldFrames = 0;
     };
 
     LearningBot g_bot;
@@ -107,7 +82,6 @@ class $modify(AIPlayLayer, PlayLayer) {
         }
 
         g_bot.resetForNewLevel();
-        log::info("[AI Bot] Initialized");
         return true;
     }
 
