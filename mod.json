@@ -1,0 +1,35 @@
+{
+  "geode": "4.0.0",
+  "gd": {
+    "win": "2.2074",
+    "android": "2.2074"
+  },
+  "id": "inaga228.ai_level_bot",
+  "name": "AI Level Bot (Prototype)",
+  "version": "1.0.0",
+  "developer": "inaga228",
+  "description": "Prototype AI bot for Geometry Dash 2.2: remembers death locations and attempts to progress further each run.",
+  "repository": "https://github.com/inaga228/Ai-bot-gd",
+  "settings": {
+    "enabled": {
+      "name": "Enable bot",
+      "description": "Master switch for the bot.",
+      "type": "bool",
+      "default": true
+    },
+    "auto-restart": {
+      "name": "Auto restart",
+      "description": "Automatically restart attempt after death.",
+      "type": "bool",
+      "default": true
+    },
+    "decision-window": {
+      "name": "Decision window",
+      "description": "How many frames to search around a learned jump position.",
+      "type": "int",
+      "default": 3,
+      "min": 1,
+      "max": 15
+    }
+  }
+}
