@@ -6,46 +6,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        include:
-          - os: windows-latest
-            target: Win64
-          - os: ubuntu-latest
-            target: Android64
-    runs-on: ${{ matrix.os }}
-
+  build-win64:
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build mod (${{ matrix.target }})
+      - name: Build mod (Win64)
         id: build
         uses: geode-sdk/build-geode-mod@main
         with:
           sdk: latest
-          target: ${{ matrix.target }}
+          target: Win64
 
-      - name: Upload artifact (${{ matrix.target }})
+      - name: Upload Win64 artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ai-level-bot-${{ matrix.target }}
+          name: ai-level-bot-Win64
           path: ${{ steps.build.outputs.build-output }}
-
-  combine:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build combined geode package
-        id: combine
-        uses: geode-sdk/build-geode-mod/combine@main
-
-      - name: Upload combined .geode
-        uses: actions/upload-artifact@v4
-        with:
-          name: ai-level-bot-combined
-          path: ${{ steps.combine.outputs.build-output }}
