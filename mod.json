@@ -30,6 +30,22 @@
       "default": 3,
       "min": 1,
       "max": 15
+    },
+    "merge-window": {
+      "name": "Merge window",
+      "description": "Merge nearby deaths into one learned point.",
+      "type": "int",
+      "default": 8,
+      "min": 1,
+      "max": 40
+    },
+    "max-memory": {
+      "name": "Max memory points",
+      "description": "Maximum stored learned points per level session.",
+      "type": "int",
+      "default": 300,
+      "min": 20,
+      "max": 2000
     }
   }
 }
