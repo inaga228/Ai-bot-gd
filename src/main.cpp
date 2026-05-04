@@ -28,7 +28,7 @@ namespace {
             // Conservative compile-safe behavior:
             // for now only tracks proximity to learned points.
             auto const playerX = layer->m_player1->getPositionX();
-            auto const decisionWindow = static_cast<float>(Mod::get()->getSettingValue<int64_t>("decision-window"));
+            auto const decisionWindow = static_cast<float>(Mod::get()->getSettingValue<int>("decision-window"));
             for (auto const& point : m_deathPoints) {
                 if (std::fabs(playerX - point.x) <= decisionWindow) {
                     // Placeholder: action logic intentionally omitted until API-specific input calls are validated.
@@ -43,8 +43,8 @@ namespace {
             }
 
             auto const x = layer->m_player1->getPositionX();
-            auto const mergeWindow = static_cast<float>(Mod::get()->getSettingValue<int64_t>("merge-window"));
-            auto const maxMemory = static_cast<size_t>(Mod::get()->getSettingValue<int64_t>("max-memory"));
+            auto const mergeWindow = static_cast<float>(Mod::get()->getSettingValue<int>("merge-window"));
+            auto const maxMemory = static_cast<size_t>(Mod::get()->getSettingValue<int>("max-memory"));
 
             bool merged = false;
             for (auto& point : m_deathPoints) {

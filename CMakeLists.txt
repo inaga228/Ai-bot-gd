@@ -7,5 +7,15 @@ add_library(${PROJECT_NAME}
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
-find_package(Geode REQUIRED)
+if (DEFINED ENV{GEODE_SDK} AND EXISTS "$ENV{GEODE_SDK}/CMakeLists.txt")
+    message(STATUS "Using GEODE_SDK at $ENV{GEODE_SDK}")
+    add_subdirectory("$ENV{GEODE_SDK}" "${CMAKE_CURRENT_BINARY_DIR}/geode-sdk")
+else()
+    message(FATAL_ERROR
+        "Geode SDK was not found.\n"
+        "Set GEODE_SDK to a Geode SDK checkout or run Geode CLI SDK install first.\n"
+        "Docs: https://docs.geode-sdk.org/getting-started/geode-cli"
+    )
+endif()
+
 setup_geode_mod(${PROJECT_NAME})
